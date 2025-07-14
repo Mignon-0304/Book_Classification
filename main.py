@@ -5,14 +5,22 @@ with open('category_all.txt', 'r', encoding='utf-8') as c:
 
 
 print("輸入類別號碼和書名以歸類書籍。")
-print("新增類別：按111" + '\n' + "修改類別名：按222" + '\n' + "查看類別總覽：按333")
-a = int(input("輸入類別號碼(輸入0結束)："))
+print("新增類別：按111" + '\n' + "修改類別名：按222" + '\n' + "查看類別總覽：按333" + '\n' + "查詢書籍分類：按555")
+
+while True:
+    try:
+        a = int(input("輸入類別號碼(輸入0結束)："))
+        break
+    except ValueError:
+        print("輸入錯誤！請重新輸入。")
+    
 
 choose = 2
 outside = "/Users/mignon/Desktop/github/書籍歸類"
 inside = "/Users/mignon/Desktop/github/書籍歸類/categories"
 
 os.chdir(outside)
+
 
 while a != 0:
     if a == 111:
@@ -43,12 +51,31 @@ while a != 0:
         with open("category_all.txt", 'a') as f:
             for i in ctg:
                 f.write(i)
+        with open("each_ctg.txt", 'a', encoding='utf-8') as f:
+            all = [new + '\n' if i.strip() == new else i for i in all]
+        with open("each_ctg.txt", 'w', encoding='utf-8') as f:
+            f.writelines(all)
         print("已修改類別為 " + ctg[a-1])
 
     elif a == 333:
         for i in range(len(ctg)):
             print(str(i+1) + " " + ctg[i], end = '')
         print('\n')
+
+    elif a == 555:
+        book = input("輸入欲查詢書名：")
+        with open("book_all.txt", 'r', encoding='utf-8') as f:
+            all = f.readlines()
+        if book+'\n' in all:
+            for i, element in enumerate(all, start = 0):
+                if element.strip() == book:
+                    with open("each_ctg.txt", 'r', encoding='utf-8') as file:
+                        each_ctg = file.readlines()
+                        print("該書被歸類於 " + each_ctg[i].strip() + " 類")
+                    break
+        else:
+            print("查無此書")
+                    
         
     elif a > len(ctg) or a < 0:
         print("查無此類別，請重新輸入")
@@ -80,7 +107,12 @@ while a != 0:
                     print("已將《" + book + "》加入「" + ctg[a-1].strip() + "」")
 
     os.chdir(outside)
-    a = int(input("輸入類別號碼(輸入0結束)："))
+    while True:
+        try:
+            a = int(input("輸入類別號碼(輸入0結束)："))
+            break
+        except ValueError:
+            print("輸入錯誤！請重新輸入。")
 
 print("歸類完畢。")
 os.chdir(inside)
